@@ -1,0 +1,2456 @@
+{
+    "openapi": "3.0.0",
+    "info": {
+        "title": "Edgar API Documentation",
+        "description": "This API allows you to consume the services of the Edgar product ©Fidensio",
+        "contact": {
+            "name": "the CTO",
+            "email": "benjamin@fidensio.com"
+        },
+        "version": "1.0.0"
+    },
+    "servers": [
+        {
+            "url": "http://localhost/api"
+        }
+    ],
+    "paths": {
+        "/service/carWash/status": {
+            "get": {
+                "tags": [
+                    "Service Car Wash"
+                ],
+                "summary": "Get list of useful information",
+                "description": "Return of list of useful information the ordering the service",
+                "operationId": "App\\Http\\Controllers\\Service\\CarWash\\CarWashController::status",
+                "parameters": [
+                    {
+                        "name": "userId",
+                        "in": "path",
+                        "description": "Id of the user concerned",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        },
+                        "example": "1"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "orderStatus": {
+                                            "$ref": "#/components/schemas/orderStatus"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
+                    },
+                    "403": {
+                        "description": "Forbidden"
+                    },
+                    "400": {
+                        "description": "Bad Request"
+                    },
+                    "404": {
+                        "description": "Not found"
+                    },
+                    "500": {
+                        "description": "Error server"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/service/carWash": {
+            "post": {
+                "tags": [
+                    "Service Car Wash"
+                ],
+                "summary": "Create a new demand for car wash",
+                "description": "Return the car wash order created",
+                "operationId": "App\\Http\\Controllers\\Service\\CarWash\\CarWashController::store",
+                "parameters": [
+                    {
+                        "name": "userId",
+                        "in": "query",
+                        "description": "Id of the user concerned",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        },
+                        "example": "1"
+                    },
+                    {
+                        "name": "streetNumber",
+                        "in": "query",
+                        "description": "Address for the execution of this service",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        },
+                        "example": "32 bis"
+                    },
+                    {
+                        "name": "street",
+                        "in": "query",
+                        "description": "Address for the execution of this service",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        },
+                        "example": "des filles du calvaire"
+                    },
+                    {
+                        "name": "locality",
+                        "in": "query",
+                        "description": "Address for the execution of this service",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        },
+                        "example": "Paris"
+                    },
+                    {
+                        "name": "postalCode",
+                        "in": "query",
+                        "description": "Address for the execution of this service",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        },
+                        "example": "75003"
+                    },
+                    {
+                        "name": "country",
+                        "in": "query",
+                        "description": "Address for the execution of this service",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        },
+                        "example": "France"
+                    },
+                    {
+                        "name": "wantedDate",
+                        "in": "query",
+                        "description": "Date asked for the execution of this service",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "format": "date"
+                        },
+                        "example": "2020-02-10"
+                    },
+                    {
+                        "name": "wantedHour",
+                        "in": "query",
+                        "description": "number of hour wanted",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        },
+                        "example": "5"
+                    },
+                    {
+                        "name": "productId",
+                        "in": "query",
+                        "description": "id return by GET /service/carWash",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        },
+                        "example": "1"
+                    },
+                    {
+                        "name": "carNumberPlate",
+                        "in": "query",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "pattern": "/(^[0-9]{1,4}[-]{0,1}[A-Z]{1,4}[-]{0,1}[0-9]{1,2}$)|(^[A-Z]{1,2}[-]{0,1}[0-9]{1,3}[-]{0,1}[A-Z]{1,2}$)/"
+                        },
+                        "example": "AX867RG"
+                    },
+                    {
+                        "name": "carCategory",
+                        "in": "query",
+                        "description": "Available options are returned by GET /service/carWash as 'A' => [..., 'title' => 'Citadines (Smart, 208, Clio)'], 'B' => [..., 'title' => ...], ..., 1 = Citadines (Smart, 208, Clio), 2 = Berline / Routière (308, C3, Laguna), 3 = Break / monospace / SUV / 4x4, 4 = Pick / camionnette (6m3 max) / Grand 4x4, 5 = Moto / Scooter / 3 roues",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        },
+                        "example": "1"
+                    },
+                    {
+                        "name": "cleaningService",
+                        "in": "query",
+                        "description": "Extra service you want to add - only wanted ones",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "type": "string"
+                            }
+                        },
+                        "example": "['needAnimalHairOption', 'needInflateTireOption', 'needDirtyCarOption', 'needBlackWheelOption']"
+                    },
+                    {
+                        "name": "userComment",
+                        "in": "query",
+                        "description": "User comment on his order",
+                        "schema": {
+                            "type": "string"
+                        },
+                        "example": "Make it shine"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "allOf": [
+                                        {
+                                            "$ref": "#/components/schemas/order"
+                                        },
+                                        {
+                                            "properties": {
+                                                "service": {
+                                                    "$ref": "#/components/schemas/service"
+                                                }
+                                            },
+                                            "type": "object"
+                                        },
+                                        {
+                                            "properties": {
+                                                "user": {
+                                                    "$ref": "#/components/schemas/user"
+                                                }
+                                            },
+                                            "type": "object"
+                                        },
+                                        {
+                                            "properties": {
+                                                "attributes": {
+                                                    "$ref": "#/components/schemas/orderAttributeCarWash"
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
+                    },
+                    "403": {
+                        "description": "Forbidden"
+                    },
+                    "400": {
+                        "description": "Bad Request"
+                    },
+                    "404": {
+                        "description": "Not found"
+                    },
+                    "500": {
+                        "description": "Error server"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/service/carWash/product": {
+            "post": {
+                "tags": [
+                    "Service Car Wash"
+                ],
+                "summary": "Create a new product for car wash in company",
+                "description": "Return the product create to the CarWash service",
+                "operationId": "App\\Http\\Controllers\\Service\\CarWash\\ProductCarWashController::store",
+                "parameters": [
+                    {
+                        "name": "name",
+                        "in": "query",
+                        "description": "The name of the product, it must be unique",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        },
+                        "example": "CarWash_A_Standard"
+                    },
+                    {
+                        "name": "description",
+                        "in": "query",
+                        "description": "Product description",
+                        "schema": {
+                            "type": "string"
+                        },
+                        "example": "Lavage auto extérieur (1heure)"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/productCarWash"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
+                    },
+                    "403": {
+                        "description": "Forbidden"
+                    },
+                    "400": {
+                        "description": "Bad Request"
+                    },
+                    "404": {
+                        "description": "Not found"
+                    },
+                    "500": {
+                        "description": "Error server"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/service/elderlyAssist": {
+            "get": {
+                "tags": [
+                    "Service Elderly Assist"
+                ],
+                "summary": "Get list of useful information",
+                "description": "Return of list of useful information the ordering the service",
+                "operationId": "App\\Http\\Controllers\\Service\\ElderlyAssist\\ElderlyAssistController::index",
+                "parameters": [
+                    {
+                        "name": "userId",
+                        "in": "path",
+                        "description": "Id of the user concerned",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        },
+                        "example": "1"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "orderStatus": {
+                                            "$ref": "#/components/schemas/orderStatus"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
+                    },
+                    "403": {
+                        "description": "Forbidden"
+                    },
+                    "400": {
+                        "description": "Bad Request"
+                    },
+                    "404": {
+                        "description": "Not found"
+                    },
+                    "500": {
+                        "description": "Error server"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "post": {
+                "tags": [
+                    "Service Elderly Assist"
+                ],
+                "summary": "Create a new demand for elderly assist",
+                "description": "Return the elderly assist order created",
+                "operationId": "App\\Http\\Controllers\\Service\\ElderlyAssist\\ElderlyAssistController::store",
+                "parameters": [
+                    {
+                        "name": "userId",
+                        "in": "query",
+                        "description": "Id of the user concerned",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        },
+                        "example": "1"
+                    },
+                    {
+                        "name": "streetNumber",
+                        "in": "query",
+                        "description": "Address for the execution of this service",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        },
+                        "example": "32 bis"
+                    },
+                    {
+                        "name": "street",
+                        "in": "query",
+                        "description": "Address for the execution of this service",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        },
+                        "example": "des filles du calvaire"
+                    },
+                    {
+                        "name": "locality",
+                        "in": "query",
+                        "description": "Address for the execution of this service",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        },
+                        "example": "Paris"
+                    },
+                    {
+                        "name": "postalCode",
+                        "in": "query",
+                        "description": "Address for the execution of this service",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        },
+                        "example": "75003"
+                    },
+                    {
+                        "name": "country",
+                        "in": "query",
+                        "description": "Address for the execution of this service",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        },
+                        "example": "France"
+                    },
+                    {
+                        "name": "isUsual",
+                        "in": "query",
+                        "description": "1 = Is the service regular, 0 = or not",
+                        "required": true,
+                        "schema": {
+                            "type": "boolean",
+                            "format": "integer"
+                        },
+                        "example": "1"
+                    },
+                    {
+                        "name": "wantedDate",
+                        "in": "query",
+                        "description": "Date asked for the execution of this service",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        },
+                        "example": "02-10-2020"
+                    },
+                    {
+                        "name": "hoursPerWeek",
+                        "in": "query",
+                        "description": "Number of hours per week asked for this service",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        },
+                        "example": "5"
+                    },
+                    {
+                        "name": "service",
+                        "in": "query",
+                        "description": "Service needed",
+                        "required": true,
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "type": "string"
+                            }
+                        },
+                        "example": "[needWakeUp, needCleaning]"
+                    },
+                    {
+                        "name": "daysNeeded",
+                        "in": "query",
+                        "description": "Day of the week asked",
+                        "required": true,
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "type": "string"
+                            }
+                        },
+                        "example": "[Monday, Wednesday]"
+                    },
+                    {
+                        "name": "userComment",
+                        "in": "query",
+                        "description": "User comment on his order",
+                        "schema": {
+                            "type": "string"
+                        },
+                        "example": "Lots of stairs"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "allOf": [
+                                        {
+                                            "$ref": "#/components/schemas/order"
+                                        },
+                                        {
+                                            "properties": {
+                                                "service": {
+                                                    "$ref": "#/components/schemas/service"
+                                                }
+                                            },
+                                            "type": "object"
+                                        },
+                                        {
+                                            "properties": {
+                                                "user": {
+                                                    "$ref": "#/components/schemas/user"
+                                                }
+                                            },
+                                            "type": "object"
+                                        },
+                                        {
+                                            "properties": {
+                                                "attributes": {
+                                                    "$ref": "#/components/schemas/orderAttributeElderlyAssist"
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
+                    },
+                    "403": {
+                        "description": "Forbidden"
+                    },
+                    "400": {
+                        "description": "Bad Request"
+                    },
+                    "404": {
+                        "description": "Not found"
+                    },
+                    "500": {
+                        "description": "Error server"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/service/houseWork": {
+            "get": {
+                "tags": [
+                    "Service House Work"
+                ],
+                "summary": "Get list of useful information",
+                "description": "Return of list of useful information the ordering the service",
+                "operationId": "App\\Http\\Controllers\\Service\\HouseWork\\HouseWorkController::index",
+                "parameters": [
+                    {
+                        "name": "userId",
+                        "in": "path",
+                        "description": "Id of the user concerned",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        },
+                        "example": "1"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "orderStatus": {
+                                            "$ref": "#/components/schemas/orderStatus"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
+                    },
+                    "403": {
+                        "description": "Forbidden"
+                    },
+                    "400": {
+                        "description": "Bad Request"
+                    },
+                    "404": {
+                        "description": "Not found"
+                    },
+                    "500": {
+                        "description": "Error server"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "post": {
+                "tags": [
+                    "Service House Work"
+                ],
+                "summary": "Create a new demand for house work",
+                "description": "Return the house work order created",
+                "operationId": "App\\Http\\Controllers\\Service\\HouseWork\\HouseWorkController::store",
+                "parameters": [
+                    {
+                        "name": "userId",
+                        "in": "query",
+                        "description": "Id of the user concerned",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        },
+                        "example": "1"
+                    },
+                    {
+                        "name": "streetNumber",
+                        "in": "query",
+                        "description": "Address for the execution of this service",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        },
+                        "example": "32 bis"
+                    },
+                    {
+                        "name": "street",
+                        "in": "query",
+                        "description": "Address for the execution of this service",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        },
+                        "example": "des filles du calvaire"
+                    },
+                    {
+                        "name": "locality",
+                        "in": "query",
+                        "description": "Address for the execution of this service",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        },
+                        "example": "Paris"
+                    },
+                    {
+                        "name": "postalCode",
+                        "in": "query",
+                        "description": "Address for the execution of this service",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        },
+                        "example": "75003"
+                    },
+                    {
+                        "name": "country",
+                        "in": "query",
+                        "description": "Address for the execution of this service",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        },
+                        "example": "France"
+                    },
+                    {
+                        "name": "isUsual",
+                        "in": "query",
+                        "description": "1 = Is the service regular, 0 = or not",
+                        "required": true,
+                        "schema": {
+                            "type": "boolean",
+                            "format": "integer"
+                        },
+                        "example": "1"
+                    },
+                    {
+                        "name": "wantedDate",
+                        "in": "query",
+                        "description": "Date asked for the execution of this service",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        },
+                        "example": "02-10-2020"
+                    },
+                    {
+                        "name": "hoursPerWeek",
+                        "in": "query",
+                        "description": "Number of hours per week asked for this service",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        },
+                        "example": "5"
+                    },
+                    {
+                        "name": "typeOfService",
+                        "in": "query",
+                        "description": "1 = Cleaning, 2 = ironing (repassage), 3 = Cleaning + ironing",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        },
+                        "example": "1"
+                    },
+                    {
+                        "name": "daysNeeded",
+                        "in": "query",
+                        "description": "Day of the week asked",
+                        "required": true,
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "type": "string"
+                            }
+                        },
+                        "example": "[Monday, Wednesday]"
+                    },
+                    {
+                        "name": "userComment",
+                        "in": "query",
+                        "description": "User comment on his order",
+                        "schema": {
+                            "type": "string"
+                        },
+                        "example": "Lots of stairs"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "allOf": [
+                                        {
+                                            "$ref": "#/components/schemas/order"
+                                        },
+                                        {
+                                            "properties": {
+                                                "service": {
+                                                    "$ref": "#/components/schemas/service"
+                                                }
+                                            },
+                                            "type": "object"
+                                        },
+                                        {
+                                            "properties": {
+                                                "user": {
+                                                    "$ref": "#/components/schemas/user"
+                                                }
+                                            },
+                                            "type": "object"
+                                        },
+                                        {
+                                            "properties": {
+                                                "attributes": {
+                                                    "$ref": "#/components/schemas/orderAttributeHouseWork"
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
+                    },
+                    "403": {
+                        "description": "Forbidden"
+                    },
+                    "400": {
+                        "description": "Bad Request"
+                    },
+                    "404": {
+                        "description": "Not found"
+                    },
+                    "500": {
+                        "description": "Error server"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/service/pressingAtCompany": {
+            "get": {
+                "tags": [
+                    "Service Pressing at Company"
+                ],
+                "summary": "Get list of useful information",
+                "description": "Return of list of useful information the ordering the service",
+                "operationId": "App\\Http\\Controllers\\Service\\PressingAtCompany\\PressingAtCompanyController::index",
+                "parameters": [
+                    {
+                        "name": "userId",
+                        "in": "path",
+                        "description": "Id of the user concerned",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        },
+                        "example": "1"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "orderStatus": {
+                                            "$ref": "#/components/schemas/orderStatus"
+                                        },
+                                        "estimatedDeliveryDate": {
+                                            "title": "estimatedDeliveryDate",
+                                            "type": "string",
+                                            "example": "2021-02-01T00:00:00.000000Z"
+                                        },
+                                        "products": {
+                                            "type": "array",
+                                            "items": {
+                                                "allOf": [
+                                                    {
+                                                        "$ref": "#/components/schemas/productPressingAtCompany"
+                                                    },
+                                                    {
+                                                        "properties": {
+                                                            "provider": {
+                                                                "$ref": "#/components/schemas/providerProductPrice"
+                                                            }
+                                                        },
+                                                        "type": "object"
+                                                    },
+                                                    {
+                                                        "properties": {
+                                                            "company": {
+                                                                "$ref": "#/components/schemas/companyProductPrice"
+                                                            }
+                                                        },
+                                                        "type": "object"
+                                                    },
+                                                    {
+                                                        "properties": {
+                                                            "price": {
+                                                                "description": "In cents",
+                                                                "type": "integer",
+                                                                "example": "2000"
+                                                            }
+                                                        },
+                                                        "type": "object"
+                                                    }
+                                                ]
+                                            }
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
+                    },
+                    "403": {
+                        "description": "Forbidden"
+                    },
+                    "400": {
+                        "description": "Bad Request"
+                    },
+                    "404": {
+                        "description": "Not found"
+                    },
+                    "500": {
+                        "description": "Error server"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "post": {
+                "tags": [
+                    "Service Pressing at Company"
+                ],
+                "summary": "Create a new demand for pressing in company",
+                "description": "Return the pressing order create to the company",
+                "operationId": "App\\Http\\Controllers\\Service\\PressingAtCompany\\PressingAtCompanyController::store",
+                "parameters": [
+                    {
+                        "name": "userId",
+                        "in": "query",
+                        "description": "Id of the user concerned",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        },
+                        "example": "1"
+                    },
+                    {
+                        "name": "options",
+                        "in": "query",
+                        "description": "Options for pressing request. 1 = pressing, 2 = laundry, 3 = retouch, 4 = shoeRepair",
+                        "required": true,
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "type": "integer"
+                            }
+                        },
+                        "example": "[1,2,3,4]"
+                    },
+                    {
+                        "name": "userComment",
+                        "in": "query",
+                        "description": "User comment on his order",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        },
+                        "example": "Some wine stain on my shirt"
+                    },
+                    {
+                        "name": "coupon",
+                        "in": "query",
+                        "description": "Discount code",
+                        "schema": {
+                            "type": "string"
+                        },
+                        "example": "ABC-123-DEF"
+                    },
+                    {
+                        "name": "locker",
+                        "in": "query",
+                        "description": "Locker number if the company is equipped with classic lockers",
+                        "schema": {
+                            "type": "integer"
+                        },
+                        "example": "1"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "allOf": [
+                                        {
+                                            "$ref": "#/components/schemas/order"
+                                        },
+                                        {
+                                            "properties": {
+                                                "service": {
+                                                    "$ref": "#/components/schemas/service"
+                                                }
+                                            },
+                                            "type": "object"
+                                        },
+                                        {
+                                            "properties": {
+                                                "user": {
+                                                    "$ref": "#/components/schemas/user"
+                                                }
+                                            },
+                                            "type": "object"
+                                        },
+                                        {
+                                            "properties": {
+                                                "details": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "$ref": "#/components/schemas/orderDetail"
+                                                    }
+                                                }
+                                            },
+                                            "type": "object"
+                                        },
+                                        {
+                                            "properties": {
+                                                "attributes": {
+                                                    "$ref": "#/components/schemas/orderAttributePressingAtCompany"
+                                                }
+                                            },
+                                            "type": "object"
+                                        },
+                                        {
+                                            "properties": {
+                                                "payment": {
+                                                    "$ref": "#/components/schemas/orderPayment"
+                                                }
+                                            },
+                                            "type": "object"
+                                        },
+                                        {
+                                            "properties": {
+                                                "locker": {
+                                                    "$ref": "#/components/schemas/oldLocker"
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
+                    },
+                    "403": {
+                        "description": "Forbidden"
+                    },
+                    "400": {
+                        "description": "Bad Request"
+                    },
+                    "404": {
+                        "description": "Not found"
+                    },
+                    "500": {
+                        "description": "Error server"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/service/pressingAtCompany/product": {
+            "post": {
+                "tags": [
+                    "Service Pressing at Company"
+                ],
+                "summary": "Create a new product for pressing in company",
+                "description": "Return the product create to the PressingAtCompany service",
+                "operationId": "App\\Http\\Controllers\\Service\\PressingAtCompany\\ProductPressingAtCompanyController::store",
+                "parameters": [
+                    {
+                        "name": "name",
+                        "in": "query",
+                        "description": "The name of the product, it must be unique",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        },
+                        "example": "Shirt on hanger"
+                    },
+                    {
+                        "name": "category",
+                        "in": "query",
+                        "description": "Product category . 1 = pressing, 2 = laundry, 3 = retouch, 4 = shoeRepair",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        },
+                        "example": "1"
+                    },
+                    {
+                        "name": "description",
+                        "in": "query",
+                        "description": "Product description",
+                        "schema": {
+                            "type": "string"
+                        },
+                        "example": "Shirt washed and ironed on hanger"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/productPressingAtCompany"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
+                    },
+                    "403": {
+                        "description": "Forbidden"
+                    },
+                    "400": {
+                        "description": "Bad Request"
+                    },
+                    "404": {
+                        "description": "Not found"
+                    },
+                    "500": {
+                        "description": "Error server"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/user": {
+            "get": {
+                "tags": [
+                    "User"
+                ],
+                "summary": "Get list of user",
+                "description": "Return of list of user",
+                "operationId": "App\\Http\\Controllers\\User\\UserController::index",
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "allOf": [
+                                            {
+                                                "$ref": "#/components/schemas/user"
+                                            },
+                                            {
+                                                "properties": {
+                                                    "data": {
+                                                        "$ref": "#/components/schemas/userData"
+                                                    }
+                                                },
+                                                "type": "object"
+                                            }
+                                        ]
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
+                    },
+                    "403": {
+                        "description": "Forbidden"
+                    },
+                    "400": {
+                        "description": "Bad Request"
+                    },
+                    "404": {
+                        "description": "Not found"
+                    },
+                    "500": {
+                        "description": "Error server"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "post": {
+                "tags": [
+                    "User"
+                ],
+                "summary": "Create a new user",
+                "description": "Return the user create",
+                "operationId": "App\\Http\\Controllers\\User\\UserController::store",
+                "parameters": [
+                    {
+                        "name": "companyId",
+                        "in": "query",
+                        "description": "Id of the company in which we want the user to be created",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        },
+                        "example": "1"
+                    },
+                    {
+                        "name": "email",
+                        "in": "query",
+                        "description": "User email, be careful it must be unique",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "format": "email"
+                        },
+                        "example": "benjamin@fidensio.com"
+                    },
+                    {
+                        "name": "indicMobile",
+                        "in": "query",
+                        "description": "Area code of the telephone number (without the +)",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        },
+                        "example": "33"
+                    },
+                    {
+                        "name": "mobile",
+                        "in": "query",
+                        "description": "Telephone number without area code",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        },
+                        "example": "695931425"
+                    },
+                    {
+                        "name": "firstName",
+                        "in": "query",
+                        "description": "The user's first name",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        },
+                        "example": "Benjamin"
+                    },
+                    {
+                        "name": "lastName",
+                        "in": "query",
+                        "description": "The user's last name",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        },
+                        "example": "Velluet"
+                    },
+                    {
+                        "name": "gender",
+                        "in": "query",
+                        "description": "The user's gender. 1 = man, 2 = woman",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        },
+                        "example": "1"
+                    },
+                    {
+                        "name": "dateOfBirth",
+                        "in": "query",
+                        "description": "User's date of birth",
+                        "schema": {
+                            "type": "string"
+                        },
+                        "example": "02-10-1997"
+                    },
+                    {
+                        "name": "emailValidated",
+                        "in": "query",
+                        "description": "Token for the validation of the user email, if it is null then it is valid",
+                        "schema": {
+                            "type": "string"
+                        },
+                        "example": "sdfkhfdkjd54sdf654d5fs"
+                    },
+                    {
+                        "name": "emailValidatedExp",
+                        "in": "query",
+                        "description": "Email validation token expiration date",
+                        "schema": {
+                            "type": "string"
+                        },
+                        "example": "30-01-2021 15:38:00"
+                    },
+                    {
+                        "name": "resetPassword",
+                        "in": "query",
+                        "description": "Token for the reset password of the user, if it is null then it is valid",
+                        "schema": {
+                            "type": "string"
+                        },
+                        "example": "sdfkhfdkjd54sdf654d5fs"
+                    },
+                    {
+                        "name": "resetPasswordExp",
+                        "in": "query",
+                        "description": "Reset password token expiration date",
+                        "schema": {
+                            "type": "string"
+                        },
+                        "example": "30-01-2021 15:38:00"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "allOf": [
+                                        {
+                                            "$ref": "#/components/schemas/user"
+                                        },
+                                        {
+                                            "properties": {
+                                                "data": {
+                                                    "$ref": "#/components/schemas/userData"
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
+                    },
+                    "403": {
+                        "description": "Forbidden"
+                    },
+                    "400": {
+                        "description": "Bad Request"
+                    },
+                    "404": {
+                        "description": "Not found"
+                    },
+                    "500": {
+                        "description": "Error server"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/user/{id}": {
+            "get": {
+                "tags": [
+                    "User"
+                ],
+                "summary": "Get the user",
+                "description": "Return user data",
+                "operationId": "App\\Http\\Controllers\\User\\UserController::show",
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "allOf": [
+                                        {
+                                            "$ref": "#/components/schemas/user"
+                                        },
+                                        {
+                                            "properties": {
+                                                "data": {
+                                                    "$ref": "#/components/schemas/userData"
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
+                    },
+                    "403": {
+                        "description": "Forbidden"
+                    },
+                    "400": {
+                        "description": "Bad Request"
+                    },
+                    "404": {
+                        "description": "Not found"
+                    },
+                    "500": {
+                        "description": "Error server"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "put": {
+                "tags": [
+                    "User"
+                ],
+                "summary": "Update user",
+                "description": "Return the user updated",
+                "operationId": "App\\Http\\Controllers\\User\\UserController::update",
+                "parameters": [
+                    {
+                        "name": "companyId",
+                        "in": "query",
+                        "description": "Id of the company in which we want the user to be updated",
+                        "schema": {
+                            "type": "integer"
+                        },
+                        "example": "1"
+                    },
+                    {
+                        "name": "email",
+                        "in": "query",
+                        "description": "User email, be careful it must be unique",
+                        "schema": {
+                            "type": "string",
+                            "format": "email"
+                        },
+                        "example": "benjamin@fidensio.com"
+                    },
+                    {
+                        "name": "indicMobile",
+                        "in": "query",
+                        "description": "Area code of the telephone number (without the +)",
+                        "schema": {
+                            "type": "string"
+                        },
+                        "example": "33"
+                    },
+                    {
+                        "name": "mobile",
+                        "in": "query",
+                        "description": "Telephone number without area code",
+                        "schema": {
+                            "type": "string"
+                        },
+                        "example": "695931425"
+                    },
+                    {
+                        "name": "firstName",
+                        "in": "query",
+                        "description": "The user's first name",
+                        "schema": {
+                            "type": "string"
+                        },
+                        "example": "Benjamin"
+                    },
+                    {
+                        "name": "lastName",
+                        "in": "query",
+                        "description": "The user's last name",
+                        "schema": {
+                            "type": "string"
+                        },
+                        "example": "Velluet"
+                    },
+                    {
+                        "name": "gender",
+                        "in": "query",
+                        "description": "The user's gender. 1 = man, 2 = woman",
+                        "schema": {
+                            "type": "integer"
+                        },
+                        "example": "1"
+                    },
+                    {
+                        "name": "dateOfBirth",
+                        "in": "query",
+                        "description": "User's date of birth",
+                        "schema": {
+                            "type": "string"
+                        },
+                        "example": "02-10-1997"
+                    },
+                    {
+                        "name": "emailValidated",
+                        "in": "query",
+                        "description": "Token for the validation of the user email, if it is null then it is valid",
+                        "schema": {
+                            "type": "string"
+                        },
+                        "example": "sdfkhfdkjd54sdf654d5fs"
+                    },
+                    {
+                        "name": "emailValidatedExp",
+                        "in": "query",
+                        "description": "Email validation token expiration date",
+                        "schema": {
+                            "type": "string"
+                        },
+                        "example": "30-01-2021 15:38:00"
+                    },
+                    {
+                        "name": "resetPassword",
+                        "in": "query",
+                        "description": "Token for the reset password of the user, if it is null then it is valid",
+                        "schema": {
+                            "type": "string"
+                        },
+                        "example": "sdfkhfdkjd54sdf654d5fs"
+                    },
+                    {
+                        "name": "resetPasswordExp",
+                        "in": "query",
+                        "description": "Reset password token expiration date",
+                        "schema": {
+                            "type": "string"
+                        },
+                        "example": "30-01-2021 15:38:00"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "allOf": [
+                                        {
+                                            "$ref": "#/components/schemas/user"
+                                        },
+                                        {
+                                            "properties": {
+                                                "data": {
+                                                    "$ref": "#/components/schemas/userData"
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
+                    },
+                    "403": {
+                        "description": "Forbidden"
+                    },
+                    "400": {
+                        "description": "Bad Request"
+                    },
+                    "404": {
+                        "description": "Not found"
+                    },
+                    "500": {
+                        "description": "Error server"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        }
+    },
+    "components": {
+        "schemas": {
+            "orderStatus": {
+                "title": "orderStatus",
+                "type": "array",
+                "items": {
+                    "properties": {
+                        "id": {
+                            "type": "integer",
+                            "example": "Pickup asked",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "type": "object"
+                }
+            },
+            "companyProductPrice": {
+                "title": "companyProductPrice",
+                "properties": {
+                    "id": {
+                        "type": "integer",
+                        "example": "1"
+                    },
+                    "companyId": {
+                        "type": "integer",
+                        "example": "1"
+                    },
+                    "productId": {
+                        "type": "integer",
+                        "example": "1"
+                    },
+                    "price": {
+                        "description": "In cents",
+                        "type": "integer",
+                        "example": "1000"
+                    },
+                    "createdAt": {
+                        "type": "string",
+                        "example": "2021-01-27T12:46:16.000000Z"
+                    },
+                    "updatedAt": {
+                        "type": "string",
+                        "example": "2021-01-27T12:46:16.000000Z"
+                    }
+                },
+                "type": "object"
+            },
+            "oldLocker": {
+                "title": "oldLocker",
+                "properties": {
+                    "id": {
+                        "type": "integer",
+                        "example": "1"
+                    },
+                    "companyId": {
+                        "type": "integer",
+                        "example": "1"
+                    },
+                    "number": {
+                        "type": "integer",
+                        "example": "1"
+                    },
+                    "code": {
+                        "type": "string",
+                        "example": "C1234",
+                        "nullable": true
+                    },
+                    "orderId": {
+                        "type": "integer",
+                        "example": "1",
+                        "nullable": true
+                    },
+                    "createdAt": {
+                        "type": "string",
+                        "example": "2021-01-27T12:46:16.000000Z"
+                    },
+                    "updatedAt": {
+                        "type": "string",
+                        "example": "2021-01-27T12:46:16.000000Z"
+                    }
+                },
+                "type": "object"
+            },
+            "order": {
+                "title": "order",
+                "properties": {
+                    "id": {
+                        "type": "integer",
+                        "example": "1"
+                    },
+                    "userId": {
+                        "type": "integer",
+                        "example": "1"
+                    },
+                    "companyId": {
+                        "type": "integer",
+                        "example": "1"
+                    },
+                    "serviceId": {
+                        "type": "integer",
+                        "example": "1"
+                    },
+                    "providerId": {
+                        "type": "integer",
+                        "example": "1",
+                        "nullable": true
+                    },
+                    "userComment": {
+                        "type": "string",
+                        "example": "I want my order to be perfect",
+                        "nullable": true
+                    },
+                    "amount": {
+                        "description": "In cents",
+                        "type": "integer",
+                        "example": "1000"
+                    },
+                    "deliveryDate": {
+                        "type": "string",
+                        "example": "2021-01-27T12:46:16.000000Z",
+                        "nullable": true
+                    },
+                    "status": {
+                        "type": "integer",
+                        "example": "1"
+                    },
+                    "createdAt": {
+                        "type": "string",
+                        "example": "2021-01-27T12:46:16.000000Z"
+                    },
+                    "updatedAt": {
+                        "type": "string",
+                        "example": "2021-01-27T12:46:16.000000Z"
+                    }
+                },
+                "type": "object"
+            },
+            "orderDetail": {
+                "title": "orderDetail",
+                "properties": {
+                    "id": {
+                        "type": "integer",
+                        "example": "1"
+                    },
+                    "orderId": {
+                        "type": "integer",
+                        "example": "1"
+                    },
+                    "name": {
+                        "type": "string",
+                        "example": "Chemise sur ceintre"
+                    },
+                    "isNegative": {
+                        "description": "1 if the amount is negative (coupon)",
+                        "type": "boolean",
+                        "format": "integer",
+                        "example": "0"
+                    },
+                    "isPercent": {
+                        "description": "coupon",
+                        "type": "boolean",
+                        "format": "integer",
+                        "example": "0"
+                    },
+                    "quantity": {
+                        "description": "10 = 1000, 1 = 100, 0.5 = 50",
+                        "type": "integer",
+                        "example": "200"
+                    },
+                    "price": {
+                        "description": "In cents",
+                        "type": "integer",
+                        "example": "1000"
+                    },
+                    "total": {
+                        "description": "In cents",
+                        "type": "integer",
+                        "example": "2000"
+                    },
+                    "createdAt": {
+                        "type": "string",
+                        "example": "2021-01-27T12:46:16.000000Z"
+                    },
+                    "updatedAt": {
+                        "type": "string",
+                        "example": "2021-01-27T12:46:16.000000Z"
+                    }
+                },
+                "type": "object"
+            },
+            "orderPayment": {
+                "title": "orderPayment",
+                "properties": {
+                    "orderId": {
+                        "type": "integer",
+                        "example": "1"
+                    },
+                    "pay": {
+                        "description": "If the order has been paid",
+                        "type": "boolean",
+                        "format": "integer",
+                        "example": "1"
+                    },
+                    "intentStripeId": {
+                        "type": "string",
+                        "example": "fD7#k9Tm^l9&7#qA0O8%",
+                        "nullable": true
+                    },
+                    "paymentToken3ds": {
+                        "type": "string",
+                        "example": "!hVCM9T5KWShHOwQRjs@",
+                        "nullable": true
+                    },
+                    "paymentDate": {
+                        "type": "string",
+                        "example": "2021-01-27T12:46:16.000000Z"
+                    },
+                    "createdAt": {
+                        "type": "string",
+                        "example": "2021-01-27T12:46:16.000000Z"
+                    },
+                    "updatedAt": {
+                        "type": "string",
+                        "example": "2021-01-27T12:46:16.000000Z"
+                    }
+                },
+                "type": "object"
+            },
+            "providerProductPrice": {
+                "title": "providerProductPrice",
+                "properties": {
+                    "id": {
+                        "type": "integer",
+                        "example": "1"
+                    },
+                    "providerId": {
+                        "type": "integer",
+                        "example": "1"
+                    },
+                    "productId": {
+                        "type": "integer",
+                        "example": "1"
+                    },
+                    "price": {
+                        "description": "In cents",
+                        "type": "integer",
+                        "example": "1000"
+                    },
+                    "createdAt": {
+                        "type": "string",
+                        "example": "2021-01-27T12:46:16.000000Z"
+                    },
+                    "updatedAt": {
+                        "type": "string",
+                        "example": "2021-01-27T12:46:16.000000Z"
+                    }
+                },
+                "type": "object"
+            },
+            "orderAttributeCarWash": {
+                "title": "orderAttributeCarWash",
+                "properties": {
+                    "orderId": {
+                        "type": "integer",
+                        "example": "1"
+                    },
+                    "streetNumber": {
+                        "type": "string",
+                        "example": "3 Bis"
+                    },
+                    "street": {
+                        "type": "string",
+                        "example": "Rue des Filles du Calvaire"
+                    },
+                    "locality": {
+                        "type": "string",
+                        "example": "Paris"
+                    },
+                    "postalCode": {
+                        "type": "string",
+                        "example": "75003"
+                    },
+                    "country": {
+                        "type": "string",
+                        "example": "France"
+                    },
+                    "carNumberPlate": {
+                        "type": "string",
+                        "example": "AX867RG"
+                    },
+                    "carCategory": {
+                        "description": "Available options are returned by GET /service/carWash as 'A' => [..., title => 'Citadines (Smart, 208, Clio)'], 'B' => [..., 'title' => ...], ..., 1 = Citadines (Smart, 208, Clio), 2 = Berline / Routière (308, C3, Laguna), 3 = Break / monospace / SUV / 4x4, 4 = Pick / camionnette (6m3 max) / Grand 4x4, 5 = Moto / Scooter / 3 roues",
+                        "type": "integer",
+                        "example": "1"
+                    },
+                    "typeOfService": {
+                        "description": "0 = Standard, 1 = Esthethique",
+                        "type": "integer",
+                        "example": "0"
+                    },
+                    "needAnimalHairOption": {
+                        "type": "boolean",
+                        "format": "integer",
+                        "example": "0"
+                    },
+                    "needInflateTireOption": {
+                        "type": "boolean",
+                        "format": "integer",
+                        "example": "1"
+                    },
+                    "needDirtyCarOption": {
+                        "type": "boolean",
+                        "format": "integer",
+                        "example": "0"
+                    },
+                    "needBlackWheelOption": {
+                        "type": "boolean",
+                        "format": "integer",
+                        "example": "0"
+                    },
+                    "wantedDate": {
+                        "type": "string",
+                        "example": "2021-02-04 08:32:47"
+                    },
+                    "wantedHour": {
+                        "type": "string",
+                        "example": "11:20:22"
+                    },
+                    "providerOrderNumber": {
+                        "type": "string",
+                        "example": "null",
+                        "nullable": true
+                    },
+                    "providerComment": {
+                        "type": "string",
+                        "example": "null",
+                        "nullable": true
+                    },
+                    "createdAt": {
+                        "type": "string",
+                        "example": "2021-01-27T12:46:16.000000Z"
+                    },
+                    "updatedAt": {
+                        "type": "string",
+                        "example": "2021-01-27T12:46:16.000000Z"
+                    }
+                },
+                "type": "object"
+            },
+            "productCarWash": {
+                "title": "productCarWash",
+                "properties": {
+                    "id": {
+                        "type": "integer",
+                        "example": "1"
+                    },
+                    "name": {
+                        "type": "string",
+                        "example": "CarWash_A_Standard"
+                    },
+                    "descritpion": {
+                        "type": "string",
+                        "example": "Lavage auto extérieur (1heure)",
+                        "nullable": true
+                    },
+                    "createdAt": {
+                        "type": "string",
+                        "example": "2021-01-27T12:46:16.000000Z"
+                    },
+                    "updatedAt": {
+                        "type": "string",
+                        "example": "2021-01-27T12:46:16.000000Z"
+                    }
+                },
+                "type": "object"
+            },
+            "orderAttributeElderlyAssist": {
+                "title": "orderAttributeElderlyAssist",
+                "properties": {
+                    "orderId": {
+                        "type": "integer",
+                        "example": "1"
+                    },
+                    "streetNumber": {
+                        "type": "string",
+                        "example": "3 Bis"
+                    },
+                    "street": {
+                        "type": "string",
+                        "example": "Rue des Filles du Calvaire"
+                    },
+                    "locality": {
+                        "type": "string",
+                        "example": "Paris"
+                    },
+                    "postalCode": {
+                        "type": "string",
+                        "example": "75003"
+                    },
+                    "country": {
+                        "type": "string",
+                        "example": "France"
+                    },
+                    "wantedDate": {
+                        "type": "string",
+                        "example": "2021-01-27T12:46:16.000000Z"
+                    },
+                    "isUsual": {
+                        "description": "Is the service regular (1) or not (0)",
+                        "type": "boolean",
+                        "format": "integer",
+                        "example": "1"
+                    },
+                    "hoursPerWeek": {
+                        "type": "integer",
+                        "example": "5"
+                    },
+                    "needWakeUp": {
+                        "type": "boolean",
+                        "format": "integer",
+                        "example": "1"
+                    },
+                    "needShower": {
+                        "type": "boolean",
+                        "format": "integer",
+                        "example": "0"
+                    },
+                    "needCleaning": {
+                        "type": "boolean",
+                        "format": "integer",
+                        "example": "0"
+                    },
+                    "needNight": {
+                        "type": "boolean",
+                        "format": "integer",
+                        "example": "1"
+                    },
+                    "needPresence": {
+                        "type": "boolean",
+                        "format": "integer",
+                        "example": "0"
+                    },
+                    "Monday": {
+                        "type": "boolean",
+                        "format": "integer",
+                        "example": "1"
+                    },
+                    "Tuesday": {
+                        "type": "boolean",
+                        "format": "integer",
+                        "example": "0"
+                    },
+                    "Wednesday": {
+                        "type": "boolean",
+                        "format": "integer",
+                        "example": "0"
+                    },
+                    "Thursday": {
+                        "type": "boolean",
+                        "format": "integer",
+                        "example": "1"
+                    },
+                    "Friday": {
+                        "type": "boolean",
+                        "format": "integer",
+                        "example": "0"
+                    },
+                    "Saturday": {
+                        "type": "boolean",
+                        "format": "integer",
+                        "example": "0"
+                    },
+                    "Sunday": {
+                        "type": "boolean",
+                        "format": "integer",
+                        "example": "0"
+                    },
+                    "providerNumber": {
+                        "type": "string",
+                        "example": "AB123",
+                        "nullable": true
+                    },
+                    "providerComment": {
+                        "type": "string",
+                        "example": "Commande abimer",
+                        "nullable": true
+                    },
+                    "createdAt": {
+                        "type": "string",
+                        "example": "2021-01-27T12:46:16.000000Z"
+                    },
+                    "updatedAt": {
+                        "type": "string",
+                        "example": "2021-01-27T12:46:16.000000Z"
+                    }
+                },
+                "type": "object"
+            },
+            "orderAttributeHouseWork": {
+                "title": "orderAttributeHouseWork",
+                "properties": {
+                    "orderId": {
+                        "type": "integer",
+                        "example": "1"
+                    },
+                    "streetNumber": {
+                        "type": "string",
+                        "example": "3 Bis"
+                    },
+                    "street": {
+                        "type": "string",
+                        "example": "Rue des Filles du Calvaire"
+                    },
+                    "locality": {
+                        "type": "string",
+                        "example": "Paris"
+                    },
+                    "postalCode": {
+                        "type": "string",
+                        "example": "75003"
+                    },
+                    "country": {
+                        "type": "string",
+                        "example": "France"
+                    },
+                    "wantedDate": {
+                        "type": "string",
+                        "example": "2021-01-27T12:46:16.000000Z"
+                    },
+                    "isUsual": {
+                        "description": "Is the service regular (1) or not (0)",
+                        "type": "boolean",
+                        "format": "integer",
+                        "example": "1"
+                    },
+                    "typeOfService": {
+                        "description": "1 = Cleaning, 2 = ironing (repassage), 3 = Cleaning + ironing",
+                        "type": "integer",
+                        "example": "2"
+                    },
+                    "hoursPerWeek": {
+                        "type": "integer",
+                        "example": "5"
+                    },
+                    "Monday": {
+                        "type": "boolean",
+                        "format": "integer",
+                        "example": "1"
+                    },
+                    "Tuesday": {
+                        "type": "boolean",
+                        "format": "integer",
+                        "example": "0"
+                    },
+                    "Wednesday": {
+                        "type": "boolean",
+                        "format": "integer",
+                        "example": "0"
+                    },
+                    "Thursday": {
+                        "type": "boolean",
+                        "format": "integer",
+                        "example": "1"
+                    },
+                    "Friday": {
+                        "type": "boolean",
+                        "format": "integer",
+                        "example": "0"
+                    },
+                    "Saturday": {
+                        "type": "boolean",
+                        "format": "integer",
+                        "example": "0"
+                    },
+                    "Sunday": {
+                        "type": "boolean",
+                        "format": "integer",
+                        "example": "0"
+                    },
+                    "providerNumber": {
+                        "type": "string",
+                        "example": "AB123",
+                        "nullable": true
+                    },
+                    "providerComment": {
+                        "type": "string",
+                        "example": "Commande abimer",
+                        "nullable": true
+                    },
+                    "createdAt": {
+                        "type": "string",
+                        "example": "2021-01-27T12:46:16.000000Z"
+                    },
+                    "updatedAt": {
+                        "type": "string",
+                        "example": "2021-01-27T12:46:16.000000Z"
+                    }
+                },
+                "type": "object"
+            },
+            "orderAttributePressingAtCompany": {
+                "title": "orderAttributePressingAtCompany",
+                "properties": {
+                    "orderId": {
+                        "type": "integer",
+                        "example": "1"
+                    },
+                    "pressing": {
+                        "description": "If the order is of the pressing type",
+                        "type": "boolean",
+                        "format": "integer",
+                        "example": "1"
+                    },
+                    "laundry": {
+                        "description": "If the order is of the laundry type",
+                        "type": "boolean",
+                        "format": "integer",
+                        "example": "0"
+                    },
+                    "retouch": {
+                        "description": "If the order is of the retouch type",
+                        "type": "boolean",
+                        "format": "integer",
+                        "example": "1"
+                    },
+                    "shoeRepair": {
+                        "description": "If the order is of the shoeRepair type",
+                        "type": "boolean",
+                        "format": "integer",
+                        "example": "0"
+                    },
+                    "providerNumber": {
+                        "type": "string",
+                        "example": "AB123",
+                        "nullable": true
+                    },
+                    "providerComment": {
+                        "type": "string",
+                        "example": "Commande abimer",
+                        "nullable": true
+                    },
+                    "createdAt": {
+                        "type": "string",
+                        "example": "2021-01-27T12:46:16.000000Z"
+                    },
+                    "updatedAt": {
+                        "type": "string",
+                        "example": "2021-01-27T12:46:16.000000Z"
+                    }
+                },
+                "type": "object"
+            },
+            "productPressingAtCompany": {
+                "title": "productPressingAtCompany",
+                "properties": {
+                    "id": {
+                        "type": "integer",
+                        "example": "1"
+                    },
+                    "name": {
+                        "type": "string",
+                        "example": "Shirt on hanger"
+                    },
+                    "descritpion": {
+                        "type": "string",
+                        "example": "Shirt washed and ironed on hanger",
+                        "nullable": true
+                    },
+                    "category": {
+                        "description": "1 = pressing, 2 = laundry, 3 = retouch, 4 = shoeRepair",
+                        "type": "integer",
+                        "example": "1"
+                    },
+                    "createdAt": {
+                        "type": "string",
+                        "example": "2021-01-27T12:46:16.000000Z"
+                    },
+                    "updatedAt": {
+                        "type": "string",
+                        "example": "2021-01-27T12:46:16.000000Z"
+                    }
+                },
+                "type": "object"
+            },
+            "service": {
+                "title": "service",
+                "properties": {
+                    "id": {
+                        "type": "integer",
+                        "example": "1"
+                    },
+                    "name": {
+                        "type": "string",
+                        "example": "Service name"
+                    },
+                    "className": {
+                        "type": "string",
+                        "example": "ServiceName"
+                    },
+                    "externalLink": {
+                        "type": "string",
+                        "example": "https://www.fidensio.com/",
+                        "nullable": true
+                    },
+                    "category": {
+                        "type": "integer",
+                        "example": "1"
+                    },
+                    "createdAt": {
+                        "type": "string",
+                        "example": "2021-01-27T12:46:16.000000Z"
+                    },
+                    "updatedAt": {
+                        "type": "string",
+                        "example": "2021-01-27T12:46:16.000000Z"
+                    }
+                },
+                "type": "object"
+            },
+            "user": {
+                "title": "user",
+                "properties": {
+                    "id": {
+                        "type": "integer",
+                        "example": "1"
+                    },
+                    "companyId": {
+                        "type": "integer",
+                        "example": "1"
+                    },
+                    "email": {
+                        "type": "string",
+                        "format": "email",
+                        "example": "benjamin@fidensio.com"
+                    },
+                    "password": {
+                        "type": "string",
+                        "example": "C1lY@2T%js1&oW5F3#0c"
+                    },
+                    "indicMobile": {
+                        "type": "string",
+                        "example": "33"
+                    },
+                    "mobile": {
+                        "type": "string",
+                        "example": "695935548"
+                    },
+                    "emailValidated": {
+                        "type": "string",
+                        "example": "js1&oW5F3#0csdgf56sd",
+                        "nullable": true
+                    },
+                    "emailValidatedExp": {
+                        "type": "string",
+                        "example": "2021-01-27T12:46:16.000000Z",
+                        "nullable": true
+                    },
+                    "resetPassword": {
+                        "type": "string",
+                        "example": "js1&oW5F3#0csdgf56sd",
+                        "nullable": true
+                    },
+                    "resetPasswordExp": {
+                        "type": "string",
+                        "example": "2021-01-27T12:46:16.000000Z",
+                        "nullable": true
+                    },
+                    "lastLogin": {
+                        "type": "string",
+                        "example": "2021-01-27T12:46:16.000000Z",
+                        "nullable": true
+                    },
+                    "createdAt": {
+                        "type": "string",
+                        "example": "2021-01-27T12:46:16.000000Z"
+                    },
+                    "updatedAt": {
+                        "type": "string",
+                        "example": "2021-01-27T12:46:16.000000Z"
+                    }
+                },
+                "type": "object"
+            },
+            "userData": {
+                "title": "userData",
+                "properties": {
+                    "userId": {
+                        "type": "integer",
+                        "example": "1"
+                    },
+                    "firstName": {
+                        "type": "string",
+                        "example": "Benjamin"
+                    },
+                    "lastName": {
+                        "type": "string",
+                        "example": "Velluet"
+                    },
+                    "dateOfBirth": {
+                        "type": "string",
+                        "example": "1997-02-10T00:00:00.000000Z",
+                        "nullable": true
+                    },
+                    "gender": {
+                        "description": "1 = Man, 2 = Woman",
+                        "type": "integer",
+                        "example": "1"
+                    },
+                    "language": {
+                        "type": "string",
+                        "example": "fr_FR"
+                    },
+                    "createdAt": {
+                        "type": "string",
+                        "example": "2021-01-27T12:46:16.000000Z"
+                    },
+                    "updatedAt": {
+                        "type": "string",
+                        "example": "2021-01-27T12:46:16.000000Z"
+                    }
+                },
+                "type": "object"
+            }
+        },
+        "securitySchemes": {
+            "bearerAuth": {
+                "type": "http",
+                "name": "bearerAuth",
+                "in": "header",
+                "bearerFormat": "JWT",
+                "scheme": "bearer"
+            }
+        }
+    },
+    "security": [
+        []
+    ]
+}
