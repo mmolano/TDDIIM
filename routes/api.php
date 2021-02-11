@@ -1,5 +1,8 @@
 <?php
 
+use App\Http\Controllers\RevisionController;
+use App\Http\Controllers\User\UserController;
+use App\Http\Middleware\Authenticate;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -14,6 +17,16 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::middleware('auth:api')->get('/user', function (Request $request) {
-    return $request->user();
+Route::group([
+    'middleware' => Authenticate::class
+], function () {
+    Route::get('/iamauthorized', [RevisionController::class, 'iAmAuthorized']);
+
+    /*
+     * Route User
+     */
+    Route::get('/user', [UserController::class, 'index']);
+    Route::get('/user/{id}', [UserController::class, 'show']);
+    Route::post('/user', [UserController::class, 'store']);
+    Route::put('/user/{id}', [UserController::class, 'update']);
 });
